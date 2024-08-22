@@ -11,6 +11,7 @@ Libraries imported:
 import time
 from typing import Callable, Dict, List, Optional
 import streamlit as st
+from PIL import Image
 
 from .. import params
 from ..controllers import AuthenticationController, CookieController
@@ -222,6 +223,11 @@ class Authenticate:
                 self.authentication_controller.login(token=token)
             time.sleep(params.LOGIN_SLEEP_TIME if sleep_time is None else sleep_time)
             if not st.session_state['authentication_status']:
+                # Add a logo image here
+                left_co, cent_co,last_co = st.columns([1, 3, 1])
+                with cent_co:
+                    logo = Image.open('assets/logo_login.png')
+                    st.image(logo)
                 if location == 'main':
                     login_form = st.form(key=key, clear_on_submit=clear_on_submit)
                 elif location == 'sidebar':
@@ -281,6 +287,8 @@ class Authenticate:
                 self.cookie_controller.delete_cookie()
                 if callback:
                     callback({})
+
+                
         elif location == 'unrendered':
             if st.session_state['authentication_status']:
                 self.authentication_controller.logout()
